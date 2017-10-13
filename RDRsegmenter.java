@@ -122,6 +122,15 @@ public class RDRsegmenter
         while (i < senLength) {
             String token = tokens.get(i);
             if (token.chars().allMatch(Character::isLetter)) {
+
+                if (Character.isLowerCase(token.charAt(0)) && (i + 1) < senLength) {
+                    if (Character.isUpperCase(tokens.get(i + 1).charAt(0))) {
+                        wordtags.add(new WordTag(token, "B"));
+                        i++;
+                        continue;
+                    }
+                }
+
                 boolean isSingleSyllabel = true;
                 for (int j = Math.min(i + 4, senLength); j > i + 1; j--) {
                     String word = String.join(" ", lowerTokens.subList(i, j));
@@ -241,7 +250,10 @@ public class RDRsegmenter
         BufferedWriter bw = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(inFilePath + ".WS"), "UTF-8"));
         for (String line; (line = buffer.readLine()) != null;) {
-            bw.write(segmentTokenizedString(String.join(" ", Tokenizer.tokenize(line))) + "\n");
+            // bw.write(segmentTokenizedString(String.join(" ", Tokenizer.tokenize(line))) + "\n");
+            for (String sentence : Tokenizer.joinSentences(Tokenizer.tokenize(line))) {
+                bw.write(segmentTokenizedString(sentence) + "\n");
+            }
         }
         buffer.close();
         bw.close();

@@ -211,6 +211,17 @@ public class Tokenizer {
 
 			if (token.matches(Regex.EOS_PUNCTUATION)) {
 
+                // Added by Dat Quoc Nguyen
+                if (nextToken.equals("\"") || nextToken.equals("''")) {
+                    int count = 0;
+                    for (String senToken : sentence) {
+                        if (senToken.equals("\"") || senToken.equals("''"))
+                            count += 1;
+                    }
+                    if (count % 2 == 1)
+                        continue;
+                }
+
 				// If the current sentence is in the quote or in the brace
 				if (StringUtils.isBrace(nextToken) || nextToken.isEmpty() || Character.isLowerCase(nextToken.charAt(0))
 						|| nextToken.equals(StringConst.COMMA) || Character.isDigit(nextToken.charAt(0))) {
@@ -306,9 +317,10 @@ class StringUtils
         return false;
     }
 
+    // Modified by Dat Quoc Nguyen
     public static boolean isBrace(String string)
     {
-        if (string.equals("\"") || string.equals("�") || string.equals("'") || string.equals(")")
+        if (string.equals("”") || string.equals("�") || string.equals("'") || string.equals(")")
                 || string.equals("}") || string.equals("]")) {
             return true;
         }
