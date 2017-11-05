@@ -160,7 +160,8 @@ public class RDRsegmenter
                         for (ilower = i + 1; ilower < Math.min(i + 4, senLength); ilower++) {
                             String ntoken = tokens.get(ilower);
                             if (Character.isLowerCase(ntoken.charAt(0))
-                                    || !ntoken.chars().allMatch(Character::isLetter)) {
+                                    || !ntoken.chars().allMatch(Character::isLetter)
+                                    || ntoken.equals("LBKT") || ntoken.equals("RBKT")) {
                                 break;
                             }
                         }

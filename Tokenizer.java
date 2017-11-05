@@ -485,7 +485,7 @@ class Regex
 
     public static final String URL = "(((https?|ftp):\\/\\/|www\\.)[^\\s/$.?#].[^\\s]*)|(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)";
 
-    public static final String NUMBER = "[-+]?\\d+([\\.,]\\d+)*";
+    public static final String NUMBER = "[-+]?\\d+([\\.,]\\d+)*%?\\p{Sc}?";
 
     public static final String PUNCTUATION = ",|\\.|:|\\?|!|;|-|_|\"|'|“|”|\\||\\(|\\)|\\[|\\]|\\{|\\}|âŸ¨|âŸ©|Â«|Â»|\\\\|\\/|\\â€˜|\\â€™|\\â€œ|\\â€�|â€¦|…|‘|’|·";
 
@@ -495,7 +495,8 @@ class Regex
 
     public static final String NUMBERS_EXPRESSION = NUMBER + "([\\+\\-\\*\\/]" + NUMBER + ")*";
 
-    public static final String SHORT_NAME = "[\\p{Upper}]\\.([\\p{L}\\p{Upper}])*";
+    //public static final String SHORT_NAME = "[\\p{Upper}]\\.([\\p{L}\\p{Upper}])*";
+    public static final String SHORT_NAME = "[\\p{L}]+[\\.\\-][\\p{L}]+([\\.\\-][\\p{L}]+)*";
 
     public static final String ALLCAP = "[A-Z]+\\.[A-Z]+";
 
