@@ -134,8 +134,8 @@ public class RDRsegmenter
                 boolean isSingleSyllabel = true;
                 for (int j = Math.min(i + 4, senLength); j > i + 1; j--) {
                     String word = String.join(" ", lowerTokens.subList(i, j));
-                    if (Vocabulary.VN_DICT.contains(word)
-                            || Vocabulary.VN_LOCATIONS.contains(word)) {
+                    if (Vocabulary.VN_DICT.contains(word) || Vocabulary.VN_LOCATIONS.contains(word)
+                            || Vocabulary.COUNTRY_L_NAME.contains(word)) {
 
                         wordtags.add(new WordTag(token, "B"));
                         for (int k = i + 1; k < j; k++)
@@ -148,35 +148,51 @@ public class RDRsegmenter
                     }
                 }
                 if (isSingleSyllabel) {
-                    if (Vocabulary.VN_FIRST_SENT_WORDS.contains(lowerTokens.get(i))
+                    String lowercasedToken = lowerTokens.get(i);
+
+                    if (Vocabulary.VN_FIRST_SENT_WORDS.contains(lowercasedToken)
                             || Character.isLowerCase(token.charAt(0))
-                            || token.chars().allMatch(Character::isUpperCase)) {
+                            || token.chars().allMatch(Character::isUpperCase)
+                            || Vocabulary.COUNTRY_S_NAME.contains(lowercasedToken)
+                            || Vocabulary.WORLD_COMPANY.contains(lowercasedToken)) {
 
                         wordtags.add(new WordTag(token, "B"));
+                        i++;
+                        continue;
 
                     }
-                    else {// Capitalized
-                        int ilower = i + 1;
-                        for (ilower = i + 1; ilower < Math.min(i + 4, senLength); ilower++) {
-                            String ntoken = tokens.get(ilower);
-                            if (Character.isLowerCase(ntoken.charAt(0))
-                                    || !ntoken.chars().allMatch(Character::isLetter)
-                                    || ntoken.equals("LBKT") || ntoken.equals("RBKT")) {
-                                break;
+
+                    // Capitalized
+                    int ilower = i + 1;
+                    for (ilower = i + 1; ilower < Math.min(i + 4, senLength); ilower++) {
+                        String ntoken = tokens.get(ilower);
+                        if (Character.isLowerCase(ntoken.charAt(0))
+                                || !ntoken.chars().allMatch(Character::isLetter)
+                                || ntoken.equals("LBKT") || ntoken.equals("RBKT")) {
+                            break;
+                        }
+                    }
+
+                    if (ilower > i + 1) {
+                        boolean isNotMiddleName = true;
+                        if (Vocabulary.VN_MIDDLE_NAMES.contains(lowercasedToken) && (i >= 1)) {
+                            String prevT = tokens.get(i - 1);
+                            if (Character.isUpperCase(prevT.charAt(0))) {
+                                if (Vocabulary.VN_FAMILY_NAMES.contains(prevT.toLowerCase())) {
+                                    wordtags.add(new WordTag(token, "I"));
+                                    isNotMiddleName = false;
+                                }
                             }
                         }
-
-                        if (ilower > i + 1) {
-
+                        if (isNotMiddleName)
                             wordtags.add(new WordTag(token, "B"));
-                            for (int k = i + 1; k < ilower; k++)
-                                wordtags.add(new WordTag(tokens.get(k), "I"));
+                        for (int k = i + 1; k < ilower; k++)
+                            wordtags.add(new WordTag(tokens.get(k), "I"));
 
-                            i = ilower - 1;
-                        }
-                        else {
-                            wordtags.add(new WordTag(token, "B"));
-                        }
+                        i = ilower - 1;
+                    }
+                    else {
+                        wordtags.add(new WordTag(token, "B"));
                     }
                 }
             }
