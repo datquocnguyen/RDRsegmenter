@@ -2,12 +2,11 @@
 
 The implementation of RDRsegmenter, as described in my paper:
 
-	@article{NguyenNVDJ2017,
+	@InProceedings{NguyenNVDJ2018,
 	author={Dat Quoc Nguyen and Dai Quoc Nguyen and Thanh Vu and Mark Dras and Mark Johnson},
 	title={{A Fast and Accurate Vietnamese Word Segmenter}},
-	journal={arXiv preprint arXiv:1709.06307},
-	year={2017},
-	url={https://arxiv.org/abs/1709.06307}
+	booktitle={Proceedings of the 11th International Conference on Language Resources and Evaluation (LREC 2018)},
+	year={2018}
 	}
 
 Please cite the paper above whenever RDRsegmenter is used to produce published results or incorporated into other software. I would highly appreciate to have your bug reports, comments and suggestions about RDRsegmenter. As a free open-source implementation, RDRsegmenter is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
