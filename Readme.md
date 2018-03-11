@@ -40,3 +40,5 @@ An output `.WS` file will be generated in the same directory containing the raw 
 	//Perform word segmentation on text corpora
 	segmenter.segmentRawCorpus("PATH-TO-RAW-TEXT-CORPUS");
 	segmenter.segmentTokenizedCorpus("PATH-TO-TOKENIZED-TEXT-CORPUS");
+
+<img width="1524" alt="rdrsegmenterexample" src="https://user-images.githubusercontent.com/2412555/37248300-b5104726-2522-11e8-89e6-587278e70a18.png">
