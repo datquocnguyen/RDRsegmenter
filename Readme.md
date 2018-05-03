@@ -1,11 +1,12 @@
 # A Fast and Accurate Vietnamese Word Segmenter
 
-The implementation of RDRsegmenter, as described in my paper:
+The implementation of RDRsegmenter, as described in [my paper](http://www.lrec-conf.org/proceedings/lrec2018/summaries/55.html):
 
 	@InProceedings{NguyenNVDJ2018,
 	author={Dat Quoc Nguyen and Dai Quoc Nguyen and Thanh Vu and Mark Dras and Mark Johnson},
 	title={{A Fast and Accurate Vietnamese Word Segmenter}},
 	booktitle={Proceedings of the 11th International Conference on Language Resources and Evaluation (LREC 2018)},
+	pages={2582--2587},
 	year={2018}
 	}
 
