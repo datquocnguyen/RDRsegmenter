@@ -1,20 +1,19 @@
 # A Fast and Accurate Vietnamese Word Segmenter
 
-The implementation of RDRsegmenter, as described in [my paper](http://www.lrec-conf.org/proceedings/lrec2018/summaries/55.html):
+The implementation of RDRsegmenter, as described in [our paper](http://www.lrec-conf.org/proceedings/lrec2018/summaries/55.html):
 
 	@InProceedings{NguyenNVDJ2018,
 	author={Dat Quoc Nguyen and Dai Quoc Nguyen and Thanh Vu and Mark Dras and Mark Johnson},
 	title={{A Fast and Accurate Vietnamese Word Segmenter}},
 	booktitle={Proceedings of the 11th International Conference on Language Resources and Evaluation (LREC 2018)},
 	pages={2582--2587},
-	year={2018}
+	year={2018},
+	url={http://www.lrec-conf.org/proceedings/lrec2018/pdf/55.pdf}
 	}
 
 **Please cite** our LREC 2018 paper whenever RDRsegmenter is used to produce published results or incorporated into other software. 
 
 RDRsegmenter has also been incorporated into our Java NLP annotation pipeline [VnCoreNLP](https://github.com/vncorenlp/VnCoreNLP) for Vietnamese. VnCoreNLP provides rich linguistic annotations through key NLP components of word segmentation, POS tagging, named entity recognition and dependency parsing.
-
-I would highly appreciate to have your bug reports, comments and suggestions about RDRsegmenter. As a free open-source implementation, RDRsegmenter is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 ## Usage
 
