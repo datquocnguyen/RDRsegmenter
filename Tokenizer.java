@@ -496,7 +496,7 @@ class Regex
     public static final String NUMBERS_EXPRESSION = NUMBER + "([\\+\\-\\*\\/]" + NUMBER + ")*";
 
     //public static final String SHORT_NAME = "[\\p{Upper}]\\.([\\p{L}\\p{Upper}])*";
-    public static final String SHORT_NAME = "[\\p{L}]+([\\.\\-][\\p{L}]+)+";
+    public static final String SHORT_NAME = "([\\p{L}]+([\\.\\-][\\p{L}]+)+)|([\\p{L}]+-\\d+)";
 
     public static final String ALLCAP = "[A-Z]+\\.[A-Z]+";
 
