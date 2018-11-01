@@ -49,7 +49,7 @@ public class Tokenizer {
 			}
 
 			if (token.endsWith(".") && Character.isAlphabetic(token.charAt(token.length() - 2))) {
-				if (token.length() == 2 && Character.isUpperCase(token.charAt(token.length() - 2))) {
+				if ((token.length() == 2 && Character.isUpperCase(token.charAt(token.length() - 2))) || (Pattern.compile(Regex.SHORT_NAME).matcher(token).find())) {
 					tokens.add(token);
 					continue;
 				}
@@ -384,7 +384,7 @@ class StringUtils
         VN_abbreviation.add("ThS.BS");
         VN_abbreviation.add("Gs.Ts");
         VN_abbreviation.add("SL.NA");
-        VN_abbreviation.add("P.");
+        //VN_abbreviation.add("P.");
         VN_abbreviation.add("Th.S");
         VN_abbreviation.add("Gs.Vs");
         VN_abbreviation.add("PGs.Bs");
@@ -409,7 +409,7 @@ class StringUtils
         VN_abbreviation.add("Miss.");
         VN_abbreviation.add("GD.ĐT");
         VN_abbreviation.add("PGs.Kts");
-        VN_abbreviation.add("Q.");
+        //VN_abbreviation.add("Q.");
         VN_abbreviation.add("N.O.V.A");
 
         VN_exception.add("Wi-fi");
@@ -496,7 +496,7 @@ class Regex
     public static final String NUMBERS_EXPRESSION = NUMBER + "([\\+\\-\\*\\/]" + NUMBER + ")*";
 
     //public static final String SHORT_NAME = "[\\p{Upper}]\\.([\\p{L}\\p{Upper}])*";
-    public static final String SHORT_NAME = "[\\p{L}]+[\\.\\-][\\p{L}]+([\\.\\-][\\p{L}]+)*";
+    public static final String SHORT_NAME = "[\\p{L}]+([\\.\\-][\\p{L}]+)+";
 
     public static final String ALLCAP = "[A-Z]+\\.[A-Z]+";
 
