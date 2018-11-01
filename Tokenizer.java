@@ -410,6 +410,10 @@ class StringUtils
         VN_abbreviation.add("GD.ĐT");
         VN_abbreviation.add("PGs.Kts");
         //VN_abbreviation.add("Q.");
+        VN_abbreviation.add("St.");
+        VN_abbreviation.add("Ng.");
+        VN_abbreviation.add("Inc.");
+        VN_abbreviation.add("Th.");
         VN_abbreviation.add("N.O.V.A");
 
         VN_exception.add("Wi-fi");
