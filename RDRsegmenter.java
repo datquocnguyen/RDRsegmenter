@@ -106,7 +106,7 @@ public class RDRsegmenter
     }
 
     // An initial word segmenter based on longest matching
-    private List<WordTag> getInitialSegmentation(String sentence)
+    public List<WordTag> getInitialSegmentation(String sentence)
     {
         List<WordTag> wordtags = new ArrayList<WordTag>();
 
