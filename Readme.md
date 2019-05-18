@@ -7,11 +7,10 @@ The implementation of RDRsegmenter, as described in [our paper](http://www.lrec-
 	title={{A Fast and Accurate Vietnamese Word Segmenter}},
 	booktitle={Proceedings of the 11th International Conference on Language Resources and Evaluation (LREC 2018)},
 	pages={2582--2587},
-	year={2018},
-	url={http://www.lrec-conf.org/proceedings/lrec2018/pdf/55.pdf}
+	year={2018}
 	}
 
-**Please cite** our LREC 2018 paper whenever RDRsegmenter is used to produce published results or incorporated into other software. 
+**Please CITE** our paper whenever RDRsegmenter is used to produce published results or incorporated into other software. 
 
 RDRsegmenter has also been incorporated into our Java NLP annotation pipeline [VnCoreNLP](https://github.com/vncorenlp/VnCoreNLP) for Vietnamese. VnCoreNLP provides rich linguistic annotations through key NLP components of word segmentation, POS tagging, named entity recognition and dependency parsing.
 
@@ -26,6 +25,8 @@ Then users can run RDRsegmenter to segment a raw text corpus (e.g. a collection 
 	$ java RDRsegmenter PATH-TO-RAW-TEXT-CORPUS
 
 An output `.WS` file will be generated in the same directory containing the raw text corpus.
+
+See `Readme.md` in `train` folder for details of retraining RDRsegmenter. 
 
 ## API
 
