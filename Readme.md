@@ -16,29 +16,32 @@ RDRsegmenter has also been incorporated into our Java NLP annotation pipeline [V
 
 ## Usage
 
-Supposed that Java 1.8+ is already set to run in command line or terminal (for example: adding Java to the path environment variable in Windows OS). To compile RDRsegmenter, users simply run the following command:
+Supposed that Java 1.8+ is already set to run via command line or terminal (for example: adding Java to the path environment variable in Windows OS). To compile RDRsegmenter, users simply run the following command:
 
 	$ javac -encoding UTF-8 RDRsegmenter.java
 
-Then users can run RDRsegmenter to segment a raw text corpus (e.g. a collection of news content):
+Then users can run RDRsegmenter to segment all raw text corpora in a directory, that share the same file name suffix:
 
-	$ java RDRsegmenter PATH-TO-RAW-TEXT-CORPUS
+	$ java RDRsegmenter PATH-TO-DIRECTORY FILE-NAME-SUFFIX
+	// Segment a raw text corpus in a directory is as follows: 
+	// java RDRsegmenter PATH-TO-DIRECTORY CORPUS-FILE-NAME
 
-An output `.WS` file will be generated in the same directory containing the raw text corpus.
+`.WSeg`-suffixed files will be generated in the same directory containing the raw text corpora.
 
-See `Readme.md` in `train` folder for details of retraining RDRsegmenter. 
+See `Readme.md` in `train` directory for details of retraining RDRsegmenter. 
 
 ## API
 
-	//Change path to "VnVocab" in line 14 in "Vocabulary.java" if necessary
-	//Change path to "Model.RDR" in line 24 in "RDRsegmenter.java" if necessary
+	// Add absolute path to "VnVocab" in line 14 in "Vocabulary.java" if necessary
+	// Add absolute path to "Model.RDR" in line 25 in "RDRsegmenter.java" if necessary
 	RDRsegmenter segmenter = new RDRsegmenter(); //Model loading
 	
-	//Perform word segmentation on text string
+	// Perform word segmentation on a text string
 	String outStr1 = segmenter.segmentRawString("Tính thuế thu nhập cá nhân (TNCN) từ tiền lương.");
 	String outStr2 = segmenter.segmentTokenizedString("Tính thuế thu nhập cá nhân ( TNCN ) từ tiền lương .");
 
-	//Perform word segmentation on text corpora
+	// Perform word segmentation on text corpora
+	segmenter.segmentDirectory("PATH-TO-DIRECTORY", "FILE-NAME-SUFFIX");
 	segmenter.segmentRawCorpus("PATH-TO-RAW-TEXT-CORPUS");
 	segmenter.segmentTokenizedCorpus("PATH-TO-TOKENIZED-TEXT-CORPUS");
 

@@ -3,6 +3,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -265,7 +266,7 @@ public class RDRsegmenter
         BufferedReader buffer = new BufferedReader(
                 new InputStreamReader(new FileInputStream(new File(inFilePath)), "UTF-8"));
         BufferedWriter bw = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(inFilePath + ".WS"), "UTF-8"));
+                new OutputStreamWriter(new FileOutputStream(inFilePath + ".WSeg"), "UTF-8"));
         for (String line; (line = buffer.readLine()) != null;) {
             // bw.write(segmentTokenizedString(String.join(" ", Tokenizer.tokenize(line))) + "\n");
             for (String sentence : Tokenizer.joinSentences(Tokenizer.tokenize(line))) {
@@ -277,12 +278,34 @@ public class RDRsegmenter
 
     }
 
+    public void segmentDirectory(String inDirectoryPath, String suffix)
+            throws IOException
+    {
+        File directoryPath = new File(inDirectoryPath);
+        FilenameFilter textFilefilter = new FilenameFilter(){
+           public boolean accept(File dir, String name) {
+              if (name.endsWith(suffix)) {
+                 return true;
+              } else {
+                 return false;
+              }
+           }
+        };
+        File filesList[] = directoryPath.listFiles(textFilefilter);
+        
+        for(File file : filesList) {
+            segmentRawCorpus(file.getAbsolutePath());
+        }
+    }
+
     public static void main(String[] args)
         throws IOException
     {
         RDRsegmenter segmenter = new RDRsegmenter();
 
-        segmenter.segmentRawCorpus(args[0]);
+        // segmenter.segmentRawCorpus(args[0]);
+
+        segmenter.segmentDirectory(args[0], args[1]);
 
         // Get output of input test set for evaluation
         // segmenter.segmentTokenizedCorpus("data/Test.txt");
