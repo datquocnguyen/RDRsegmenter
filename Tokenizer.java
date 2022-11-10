@@ -89,11 +89,11 @@ public class Tokenizer {
 			if (tokenContainsExp)
 				continue;
 
-			List<String> regexes = Regex.getRegexList();
+			List<Pattern> regexes = Regex.getRegexList();
 
 			boolean matching = false;
-			for (String regex : regexes) {
-				if (token.matches(regex)) {
+			for (Pattern regex : regexes) {
+                                if (regex.matcher(token).matches()) {
 					tokens.add(token);
 					matching = true;
 					break;
@@ -104,7 +104,7 @@ public class Tokenizer {
 			}
 
 			for (int i = 0; i < regexes.size(); i++) {
-				Pattern pattern = Pattern.compile(regexes.get(i));
+				Pattern pattern = regexes.get(i);
 				Matcher matcher = pattern.matcher(token);
 
 				if (matcher.find()) {
@@ -504,59 +504,59 @@ class Regex
 
     public static final String ALLCAP = "[A-Z]+\\.[A-Z]+";
 
-    private static List<String> regexes = null;
+    private static List<Pattern> regexes = null;
 
     private static List<String> regexIndex = null;
 
-    public static List<String> getRegexList()
+    public static List<Pattern> getRegexList()
     {
         if (regexes == null) {
-            regexes = new ArrayList<String>();
+            regexes = new ArrayList<Pattern>();
             regexIndex = new ArrayList<String>();
 
-            regexes.add(ELLIPSIS);
+            regexes.add(Pattern.compile(ELLIPSIS));
             regexIndex.add("ELLIPSIS");
 
-            regexes.add(EMAIL);
+            regexes.add(Pattern.compile(EMAIL));
             regexIndex.add("EMAIL");
 
-            regexes.add(URL);
+            regexes.add(Pattern.compile(URL));
             regexIndex.add("URL");
 
-            regexes.add(FULL_DATE);
+            regexes.add(Pattern.compile(FULL_DATE));
             regexIndex.add("FULL_DATE");
 
-            regexes.add(MONTH);
+            regexes.add(Pattern.compile(MONTH));
             regexIndex.add("MONTH");
 
-            regexes.add(DATE);
+            regexes.add(Pattern.compile(DATE));
             regexIndex.add("DATE");
 
-            regexes.add(TIME);
+            regexes.add(Pattern.compile(TIME));
             regexIndex.add("TIME");
 
-            regexes.add(MONEY);
+            regexes.add(Pattern.compile(MONEY));
             regexIndex.add("MONEY");
 
-            regexes.add(PHONE_NUMBER);
+            regexes.add(Pattern.compile(PHONE_NUMBER));
             regexIndex.add("PHONE_NUMBER");
 
-            regexes.add(SHORT_NAME);
+            regexes.add(Pattern.compile(SHORT_NAME));
             regexIndex.add("SHORT_NAME");
 
-            regexes.add(NUMBERS_EXPRESSION);
+            regexes.add(Pattern.compile(NUMBERS_EXPRESSION));
             regexIndex.add("NUMBERS_EXPRESSION");
 
-            regexes.add(NUMBER);
+            regexes.add(Pattern.compile(NUMBER));
             regexIndex.add("NUMBER");
 
-            regexes.add(PUNCTUATION);
+            regexes.add(Pattern.compile(PUNCTUATION));
             regexIndex.add("PUNCTUATION");
 
-            regexes.add(SPECIAL_CHAR);
+            regexes.add(Pattern.compile(SPECIAL_CHAR));
             regexIndex.add("SPECIAL_CHAR");
 
-            regexes.add(ALLCAP);
+            regexes.add(Pattern.compile(ALLCAP));
             regexIndex.add("ALLCAP");
 
         }
