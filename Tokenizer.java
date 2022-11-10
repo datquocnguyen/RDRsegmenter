@@ -109,7 +109,7 @@ public class Tokenizer {
 				Matcher matcher = pattern.matcher(token);
 
 				if (matcher.find()) {
-					if (i == Regex.getRegexIndex("url")) {
+					if (pattern == Regex.URL_PATTERN) {
 						String[] elements = token.split(Pattern.quote("."));
 						boolean hasURL = true;
 						for (String ele : elements) {
@@ -131,7 +131,7 @@ public class Tokenizer {
 						}
 					}
 
-					else if (i == Regex.getRegexIndex("month")) {
+					else if (pattern == Regex.MONTH_PATTERN) {
 						int start = matcher.start();
 
 						boolean hasLetter = false;
@@ -479,6 +479,7 @@ class Regex
     public static final String FULL_DATE = "(0?[1-9]|[12][0-9]|3[01])(\\/|-|\\.)(1[0-2]|(0?[1-9]))((\\/|-|\\.)\\d{4})";
 
     public static final String MONTH = "(1[0-2]|(0?[1-9]))(\\/)\\d{4}";
+    public static final Pattern MONTH_PATTERN = Pattern.compile(MONTH);
 
     public static final String DATE = "(0?[1-9]|[12][0-9]|3[01])(\\/)(1[0-2]|(0?[1-9]))";
 
@@ -489,6 +490,7 @@ class Regex
     public static final String PHONE_NUMBER = "(\\(?\\+\\d{1,2}\\)?[\\s\\.-]?)?\\d{2,}[\\s\\.-]?\\d{3,}[\\s\\.-]?\\d{3,}";
 
     public static final String URL = "(((https?|ftp):\\/\\/|www\\.)[^\\s/$.?#].[^\\s]*)|(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)";
+    public static final Pattern URL_PATTERN = Pattern.compile(URL);
 
     public static final String NUMBER = "[-+]?\\d+([\\.,]\\d+)*%?\\p{Sc}?";
 
@@ -509,44 +511,22 @@ class Regex
     private static List<Pattern> regexes = Arrays.asList(
         Pattern.compile(ELLIPSIS),
         Pattern.compile(EMAIL),
-        Pattern.compile(URL),
+        URL_PATTERN,
         Pattern.compile(FULL_DATE),
-        Pattern.compile(MONTH),
+        MONTH_PATTERN,
         Pattern.compile(DATE),
         Pattern.compile(TIME),
         Pattern.compile(MONEY),
         Pattern.compile(PHONE_NUMBER),
-        Pattern.compile(SHORT_NAME),
+        SHORT_NAME_PATTERN,
         Pattern.compile(NUMBERS_EXPRESSION),
         Pattern.compile(NUMBER),
         Pattern.compile(PUNCTUATION),
         Pattern.compile(SPECIAL_CHAR),
         Pattern.compile(ALLCAP));
 
-    private static List<String> regexIndex = Arrays.asList(
-        "ELLIPSIS",
-        "EMAIL",
-        "URL",
-        "FULL_DATE",
-        "MONTH",
-        "DATE",
-        "TIME",
-        "MONEY",
-        "PHONE_NUMBER",
-        "SHORT_NAME",
-        "NUMBERS_EXPRESSION",
-        "NUMBER",
-        "PUNCTUATION",
-        "SPECIAL_CHAR",
-        "ALLCAP");
-
     public static List<Pattern> getRegexList()
     {
         return regexes;
-    }
-
-    public static int getRegexIndex(String regex)
-    {
-        return regexIndex.indexOf(regex.toUpperCase());
     }
 }
