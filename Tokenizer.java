@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -504,63 +505,42 @@ class Regex
 
     public static final String ALLCAP = "[A-Z]+\\.[A-Z]+";
 
-    private static List<Pattern> regexes = null;
+    private static List<Pattern> regexes = Arrays.asList(
+        Pattern.compile(ELLIPSIS),
+        Pattern.compile(EMAIL),
+        Pattern.compile(URL),
+        Pattern.compile(FULL_DATE),
+        Pattern.compile(MONTH),
+        Pattern.compile(DATE),
+        Pattern.compile(TIME),
+        Pattern.compile(MONEY),
+        Pattern.compile(PHONE_NUMBER),
+        Pattern.compile(SHORT_NAME),
+        Pattern.compile(NUMBERS_EXPRESSION),
+        Pattern.compile(NUMBER),
+        Pattern.compile(PUNCTUATION),
+        Pattern.compile(SPECIAL_CHAR),
+        Pattern.compile(ALLCAP));
 
-    private static List<String> regexIndex = null;
+    private static List<String> regexIndex = Arrays.asList(
+        "ELLIPSIS",
+        "EMAIL",
+        "URL",
+        "FULL_DATE",
+        "MONTH",
+        "DATE",
+        "TIME",
+        "MONEY",
+        "PHONE_NUMBER",
+        "SHORT_NAME",
+        "NUMBERS_EXPRESSION",
+        "NUMBER",
+        "PUNCTUATION",
+        "SPECIAL_CHAR",
+        "ALLCAP");
 
     public static List<Pattern> getRegexList()
     {
-        if (regexes == null) {
-            regexes = new ArrayList<Pattern>();
-            regexIndex = new ArrayList<String>();
-
-            regexes.add(Pattern.compile(ELLIPSIS));
-            regexIndex.add("ELLIPSIS");
-
-            regexes.add(Pattern.compile(EMAIL));
-            regexIndex.add("EMAIL");
-
-            regexes.add(Pattern.compile(URL));
-            regexIndex.add("URL");
-
-            regexes.add(Pattern.compile(FULL_DATE));
-            regexIndex.add("FULL_DATE");
-
-            regexes.add(Pattern.compile(MONTH));
-            regexIndex.add("MONTH");
-
-            regexes.add(Pattern.compile(DATE));
-            regexIndex.add("DATE");
-
-            regexes.add(Pattern.compile(TIME));
-            regexIndex.add("TIME");
-
-            regexes.add(Pattern.compile(MONEY));
-            regexIndex.add("MONEY");
-
-            regexes.add(Pattern.compile(PHONE_NUMBER));
-            regexIndex.add("PHONE_NUMBER");
-
-            regexes.add(Pattern.compile(SHORT_NAME));
-            regexIndex.add("SHORT_NAME");
-
-            regexes.add(Pattern.compile(NUMBERS_EXPRESSION));
-            regexIndex.add("NUMBERS_EXPRESSION");
-
-            regexes.add(Pattern.compile(NUMBER));
-            regexIndex.add("NUMBER");
-
-            regexes.add(Pattern.compile(PUNCTUATION));
-            regexIndex.add("PUNCTUATION");
-
-            regexes.add(Pattern.compile(SPECIAL_CHAR));
-            regexIndex.add("SPECIAL_CHAR");
-
-            regexes.add(Pattern.compile(ALLCAP));
-            regexIndex.add("ALLCAP");
-
-        }
-
         return regexes;
     }
 
