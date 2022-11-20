@@ -44,7 +44,7 @@ public class Tokenizer {
 				continue;
 			}
 
-            if (StringUtils.VN_abbreviation.contains(token)) {
+			if (StringUtils.VN_abbreviation.contains(token)) {
 				tokens.add(token);
 				continue;
 			}
@@ -59,13 +59,13 @@ public class Tokenizer {
 				continue;
 			}
 
-            if (StringUtils.VN_exception.contains(token)) {
+			if (StringUtils.VN_exception.contains(token)) {
 				tokens.add(token);
 				continue;
 			}
 
 			boolean tokenContainsAbb = false;
-            for (String e : StringUtils.VN_abbreviation) {
+			for (String e : StringUtils.VN_abbreviation) {
 				int i = token.indexOf(e);
 				if (i < 0)
 					continue;
@@ -78,7 +78,7 @@ public class Tokenizer {
 				continue;
 
 			boolean tokenContainsExp = false;
-            for (String e : StringUtils.VN_exception) {
+			for (String e : StringUtils.VN_exception) {
 				int i = token.indexOf(e);
 				if (i < 0)
 					continue;
@@ -94,7 +94,7 @@ public class Tokenizer {
 
 			boolean matching = false;
 			for (Pattern regex : regexes) {
-                                if (regex.matcher(token).matches()) {
+				if (regex.matcher(token).matches()) {
 					tokens.add(token);
 					matching = true;
 					break;
