@@ -1,5 +1,8 @@
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,26 +22,54 @@ public class Tokenizer {
 	 * @return List of tokens from s
 	 */
 	public static List<String> tokenize(String s) {
-		if (s == null || s.trim().isEmpty()) {
-			return new ArrayList<String>();
+		if (s == null) {
+			return Collections.emptyList();
 		}
 
-		String[] tempTokens = s.trim().split("\\s+");
-		if (tempTokens.length == 0) {
-			return new ArrayList<String>();
+		s = s.trim();
+		if (s.isEmpty()) {
+			return Collections.emptyList();
 		}
 
-		List<String> tokens = new ArrayList<String>();
+                // after building an ArrayDeque like this, the first token returned by pop() is the first piece of the split
+                // we use this as a stack to avoid recursion, which can overwhelm the call stack on long tokens.
+                // the plan is that instead of recursing on the beginning of a token, the middle of a token,
+                // and the end of a token when there is a split in the middle, we put all three on the stack
+                // and keep popping from the stack until processing is finished
+		ArrayDeque<String> tempTokens = new ArrayDeque<String>(Arrays.asList(s.split("\\s+")));
+                // keep track of any tokens on the stack which are already processed
+                // will save some time to reprocess them (may need to test that assumption)
+		ArrayDeque<Integer> processedTokens = new ArrayDeque<Integer>();
 
-		for (String token : tempTokens) {
+		ArrayList<String> tokens = new ArrayList<String>(tempTokens.size());
+
+		while (tempTokens.size() > 0) {
+			String token = tempTokens.pop();
+			if (processedTokens.size() > 0 && tempTokens.size() == processedTokens.peek()) {
+				tokens.add(token);
+				processedTokens.pop();
+				continue;
+			}
+
+                        if (token.length() == 0) {
+				continue;
+                        }
 			if (token.length() == 1 || !StringUtils.hasPunctuation(token)) {
 				tokens.add(token);
 				continue;
 			}
 
+			// will remove the "," from the end of the token and "recurse"
 			if (token.endsWith(",")) {
-				tokens.addAll(tokenize(token.substring(0, token.length() - 1)));
-				tokens.add(",");
+				processedTokens.push(tempTokens.size());
+				tempTokens.push(",");
+
+                                // the calls to trim() are because splitting on \\s doesn't
+                                // take into account all of the characters removed by trim()
+                                // one place this is noticeable is in the Oscar Common Crawl
+                                // dataset, where some backspace characters show up
+                                // and would be tokenized differently without the trim()
+				tempTokens.push(token.substring(0, token.length() - 1).trim());
 				continue;
 			}
 
@@ -52,8 +83,10 @@ public class Tokenizer {
 					tokens.add(token);
 					continue;
 				}
-				tokens.addAll(tokenize(token.substring(0, token.length() - 1)));
-				tokens.add(".");
+				processedTokens.push(tempTokens.size());
+				tempTokens.push(".");
+
+				tempTokens.push(token.substring(0, token.length() - 1).trim());
 				continue;
 			}
 
@@ -69,7 +102,7 @@ public class Tokenizer {
 					continue;
 
 				tokenContainsAbb = true;
-				tokens = recursive(tokens, token, i, i + e.length());
+				recursive(tempTokens, processedTokens, token, i, i + e.length());
 				break;
 			}
 			if (tokenContainsAbb)
@@ -82,7 +115,7 @@ public class Tokenizer {
 					continue;
 
 				tokenContainsExp = true;
-				tokens = recursive(tokens, token, i, i + e.length());
+				recursive(tempTokens, processedTokens, token, i, i + e.length());
 				break;
 			}
 			if (tokenContainsExp)
@@ -122,7 +155,7 @@ public class Tokenizer {
 							}
 						}
 						if (hasURL) {
-							tokens = recursive(tokens, token, matcher.start(), matcher.end());
+							recursive(tempTokens, processedTokens, token, matcher.start(), matcher.end());
 						} else {
 							continue;
 						}
@@ -135,7 +168,7 @@ public class Tokenizer {
 
 						for (int j = 0; j < start; j++) {
 							if (Character.isLetter(token.charAt(j))) {
-								tokens = recursive(tokens, token, matcher.start(), matcher.end());
+								recursive(tempTokens, processedTokens, token, matcher.start(), matcher.end());
 								hasLetter = true;
 								break;
 							}
@@ -147,7 +180,7 @@ public class Tokenizer {
 					}
 
 					else {
-						tokens = recursive(tokens, token, matcher.start(), matcher.end());
+						recursive(tempTokens, processedTokens, token, matcher.start(), matcher.end());
 					}
 
 					matching = true;
@@ -155,24 +188,25 @@ public class Tokenizer {
 				}
 			}
 
-			if (matching)
-				continue;
-			else
+			if (!matching) {
 				tokens.add(token);
+			}
 		}
 
 		return tokens;
 	}
 
-	private static List<String> recursive(List<String> tokens, String token, int beginMatch, int endMatch) {
-		if (beginMatch > 0)
-			tokens.addAll(tokenize(token.substring(0, beginMatch)));
-		tokens.addAll(tokenize(token.substring(beginMatch, endMatch)));
+	private static void recursive(Deque<String> tempTokens, Deque<Integer> processedTokens, String token, int beginMatch, int endMatch) {
+		if (endMatch < token.length()) {
+			tempTokens.push(token.substring(endMatch).trim());
+		}
 
-		if (endMatch < token.length())
-			tokens.addAll(tokenize(token.substring(endMatch)));
+		processedTokens.push(tempTokens.size());
+		tempTokens.push(token.substring(beginMatch, endMatch));
 
-		return tokens;
+		if (beginMatch > 0) {
+			tempTokens.push(token.substring(0, beginMatch).trim());
+		}
 	}
 
 	public static List<String> joinSentences(List<String> tokens) {
@@ -487,7 +521,7 @@ class Regex
 
     public static final String URL = "(((https?|ftp):\\/\\/|www\\.)[^\\s/$.?#].[^\\s]*)|(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)";
     public static final Pattern URL_PATTERN = Pattern.compile(URL);
-
+
     public static final String NUMBER = "[-+]?\\d+([\\.,]\\d+)*%?\\p{Sc}?";
 
     public static final String PUNCTUATION = ",|\\.|:|\\?|!|;|-|_|\"|'|“|”|\\||\\(|\\)|\\[|\\]|\\{|\\}|âŸ¨|âŸ©|Â«|Â»|\\\\|\\/|\\â€˜|\\â€™|\\â€œ|\\â€�|â€¦|…|‘|’|·";
