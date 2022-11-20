@@ -104,8 +104,7 @@ public class Tokenizer {
 				continue;
 			}
 
-			for (int i = 0; i < regexes.size(); i++) {
-				Pattern pattern = regexes.get(i);
+			for (Pattern pattern : regexes) {
 				Matcher matcher = pattern.matcher(token);
 
 				if (matcher.find()) {
