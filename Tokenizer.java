@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,9 +17,8 @@ public class Tokenizer {
 	/**
 	 * @param s
 	 * @return List of tokens from s
-	 * @throws IOException
 	 */
-	public static List<String> tokenize(String s) throws IOException {
+	public static List<String> tokenize(String s) {
 		if (s == null || s.trim().isEmpty()) {
 			return new ArrayList<String>();
 		}
@@ -166,8 +164,7 @@ public class Tokenizer {
 		return tokens;
 	}
 
-	private static List<String> recursive(List<String> tokens, String token, int beginMatch, int endMatch)
-			throws IOException {
+	private static List<String> recursive(List<String> tokens, String token, int beginMatch, int endMatch) {
 		if (beginMatch > 0)
 			tokens.addAll(tokenize(token.substring(0, beginMatch)));
 		tokens.addAll(tokenize(token.substring(beginMatch, endMatch)));
