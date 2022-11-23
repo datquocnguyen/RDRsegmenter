@@ -1,5 +1,5 @@
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,9 +17,8 @@ public class Tokenizer {
 	/**
 	 * @param s
 	 * @return List of tokens from s
-	 * @throws IOException
 	 */
-	public static List<String> tokenize(String s) throws IOException {
+	public static List<String> tokenize(String s) {
 		if (s == null || s.trim().isEmpty()) {
 			return new ArrayList<String>();
 		}
@@ -43,13 +42,13 @@ public class Tokenizer {
 				continue;
 			}
 
-            if (StringUtils.VN_abbreviation.contains(token)) {
+			if (StringUtils.VN_abbreviation.contains(token)) {
 				tokens.add(token);
 				continue;
 			}
 
 			if (token.endsWith(".") && Character.isAlphabetic(token.charAt(token.length() - 2))) {
-				if ((token.length() == 2 && Character.isUpperCase(token.charAt(token.length() - 2))) || (Pattern.compile(Regex.SHORT_NAME).matcher(token).find())) {
+				if ((token.length() == 2 && Character.isUpperCase(token.charAt(token.length() - 2))) || (Regex.SHORT_NAME_PATTERN.matcher(token).find())) {
 					tokens.add(token);
 					continue;
 				}
@@ -58,13 +57,13 @@ public class Tokenizer {
 				continue;
 			}
 
-            if (StringUtils.VN_exception.contains(token)) {
+			if (StringUtils.VN_exception.contains(token)) {
 				tokens.add(token);
 				continue;
 			}
 
 			boolean tokenContainsAbb = false;
-            for (String e : StringUtils.VN_abbreviation) {
+			for (String e : StringUtils.VN_abbreviation) {
 				int i = token.indexOf(e);
 				if (i < 0)
 					continue;
@@ -77,7 +76,7 @@ public class Tokenizer {
 				continue;
 
 			boolean tokenContainsExp = false;
-            for (String e : StringUtils.VN_exception) {
+			for (String e : StringUtils.VN_exception) {
 				int i = token.indexOf(e);
 				if (i < 0)
 					continue;
@@ -89,11 +88,11 @@ public class Tokenizer {
 			if (tokenContainsExp)
 				continue;
 
-			List<String> regexes = Regex.getRegexList();
+			List<Pattern> regexes = Regex.getRegexList();
 
 			boolean matching = false;
-			for (String regex : regexes) {
-				if (token.matches(regex)) {
+			for (Pattern regex : regexes) {
+				if (regex.matcher(token).matches()) {
 					tokens.add(token);
 					matching = true;
 					break;
@@ -103,12 +102,11 @@ public class Tokenizer {
 				continue;
 			}
 
-			for (int i = 0; i < regexes.size(); i++) {
-				Pattern pattern = Pattern.compile(regexes.get(i));
+			for (Pattern pattern : regexes) {
 				Matcher matcher = pattern.matcher(token);
 
 				if (matcher.find()) {
-					if (i == Regex.getRegexIndex("url")) {
+					if (pattern == Regex.URL_PATTERN) {
 						String[] elements = token.split(Pattern.quote("."));
 						boolean hasURL = true;
 						for (String ele : elements) {
@@ -130,7 +128,7 @@ public class Tokenizer {
 						}
 					}
 
-					else if (i == Regex.getRegexIndex("month")) {
+					else if (pattern == Regex.MONTH_PATTERN) {
 						int start = matcher.start();
 
 						boolean hasLetter = false;
@@ -166,8 +164,7 @@ public class Tokenizer {
 		return tokens;
 	}
 
-	private static List<String> recursive(List<String> tokens, String token, int beginMatch, int endMatch)
-			throws IOException {
+	private static List<String> recursive(List<String> tokens, String token, int beginMatch, int endMatch) {
 		if (beginMatch > 0)
 			tokens.addAll(tokenize(token.substring(0, beginMatch)));
 		tokens.addAll(tokenize(token.substring(beginMatch, endMatch)));
@@ -478,6 +475,7 @@ class Regex
     public static final String FULL_DATE = "(0?[1-9]|[12][0-9]|3[01])(\\/|-|\\.)(1[0-2]|(0?[1-9]))((\\/|-|\\.)\\d{4})";
 
     public static final String MONTH = "(1[0-2]|(0?[1-9]))(\\/)\\d{4}";
+    public static final Pattern MONTH_PATTERN = Pattern.compile(MONTH);
 
     public static final String DATE = "(0?[1-9]|[12][0-9]|3[01])(\\/)(1[0-2]|(0?[1-9]))";
 
@@ -488,6 +486,7 @@ class Regex
     public static final String PHONE_NUMBER = "(\\(?\\+\\d{1,2}\\)?[\\s\\.-]?)?\\d{2,}[\\s\\.-]?\\d{3,}[\\s\\.-]?\\d{3,}";
 
     public static final String URL = "(((https?|ftp):\\/\\/|www\\.)[^\\s/$.?#].[^\\s]*)|(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)";
+    public static final Pattern URL_PATTERN = Pattern.compile(URL);
 
     public static final String NUMBER = "[-+]?\\d+([\\.,]\\d+)*%?\\p{Sc}?";
 
@@ -501,71 +500,29 @@ class Regex
 
     //public static final String SHORT_NAME = "[\\p{Upper}]\\.([\\p{L}\\p{Upper}])*";
     public static final String SHORT_NAME = "([\\p{L}]+([\\.\\-][\\p{L}]+)+)|([\\p{L}]+-\\d+)";
+    public static final Pattern SHORT_NAME_PATTERN = Pattern.compile(SHORT_NAME);
 
     public static final String ALLCAP = "[A-Z]+\\.[A-Z]+";
 
-    private static List<String> regexes = null;
+    private static List<Pattern> regexes = Arrays.asList(
+        Pattern.compile(ELLIPSIS),
+        Pattern.compile(EMAIL),
+        URL_PATTERN,
+        Pattern.compile(FULL_DATE),
+        MONTH_PATTERN,
+        Pattern.compile(DATE),
+        Pattern.compile(TIME),
+        Pattern.compile(MONEY),
+        Pattern.compile(PHONE_NUMBER),
+        SHORT_NAME_PATTERN,
+        Pattern.compile(NUMBERS_EXPRESSION),
+        Pattern.compile(NUMBER),
+        Pattern.compile(PUNCTUATION),
+        Pattern.compile(SPECIAL_CHAR),
+        Pattern.compile(ALLCAP));
 
-    private static List<String> regexIndex = null;
-
-    public static List<String> getRegexList()
+    public static List<Pattern> getRegexList()
     {
-        if (regexes == null) {
-            regexes = new ArrayList<String>();
-            regexIndex = new ArrayList<String>();
-
-            regexes.add(ELLIPSIS);
-            regexIndex.add("ELLIPSIS");
-
-            regexes.add(EMAIL);
-            regexIndex.add("EMAIL");
-
-            regexes.add(URL);
-            regexIndex.add("URL");
-
-            regexes.add(FULL_DATE);
-            regexIndex.add("FULL_DATE");
-
-            regexes.add(MONTH);
-            regexIndex.add("MONTH");
-
-            regexes.add(DATE);
-            regexIndex.add("DATE");
-
-            regexes.add(TIME);
-            regexIndex.add("TIME");
-
-            regexes.add(MONEY);
-            regexIndex.add("MONEY");
-
-            regexes.add(PHONE_NUMBER);
-            regexIndex.add("PHONE_NUMBER");
-
-            regexes.add(SHORT_NAME);
-            regexIndex.add("SHORT_NAME");
-
-            regexes.add(NUMBERS_EXPRESSION);
-            regexIndex.add("NUMBERS_EXPRESSION");
-
-            regexes.add(NUMBER);
-            regexIndex.add("NUMBER");
-
-            regexes.add(PUNCTUATION);
-            regexIndex.add("PUNCTUATION");
-
-            regexes.add(SPECIAL_CHAR);
-            regexIndex.add("SPECIAL_CHAR");
-
-            regexes.add(ALLCAP);
-            regexIndex.add("ALLCAP");
-
-        }
-
         return regexes;
-    }
-
-    public static int getRegexIndex(String regex)
-    {
-        return regexIndex.indexOf(regex.toUpperCase());
     }
 }
